@@ -9,5 +9,9 @@ async def enrich_query(query: str) -> Any:
     result = await search_scrap_enrich(query)
     return result
 
+@mcp.tool
+async def ping() -> str:
+    return "pong"
+
 if __name__ == "__main__":
-    mcp.run(transport="http", port=8000)
+    mcp.run(transport="http", port=8001)
