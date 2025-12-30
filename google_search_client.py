@@ -1,11 +1,18 @@
 import aiohttp
-# import asyncio
 import json
 from typing import Any
 from config import settings
 
 SERPER_API_KEY = settings.SERPER_API_KEY
 
+# Shared aiohttp session
+_aiohttp_session: aiohttp.ClientSession | None = None
+
+async def get_aiohttp_session() -> aiohttp.ClientSession:
+    global _aiohttp_session
+    if _aiohttp_session is None or _aiohttp_session.closed:
+        _aiohttp_session = aiohttp.ClientSession()
+    return _aiohttp_session
 
 async def serper_search(
     q: str,
@@ -46,18 +53,28 @@ async def serper_search(
 
     headers = {"X-API-KEY": SERPER_API_KEY, "Content-Type": "application/json"}
 
-    async with aiohttp.ClientSession() as session:
-        async with session.post(
-            url=url, headers=headers, data=json.dumps(obj=payload_dict)
-        ) as response:
-            result = await response.json()
-            return result.get("organic", [])
+    session = await get_aiohttp_session()
+    async with session.post(
+        url=url, headers=headers, data=json.dumps(obj=payload_dict)
+    ) as response:
+        result = await response.json()
+        return result.get("organic", [])
 
-
-# # Example usage:
-# if __name__ == "__main__":
-
-#     async def main() -> None:
+# Optionally, add a cleanup function to close the session on shutdown
+import atexit
+import asyncio
+def _close_aiohttp_session():
+    global _aiohttp_session
+    if _aiohttp_session and not _aiohttp_session.closed:
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                loop.create_task(_aiohttp_session.close())
+            else:
+                loop.run_until_complete(_aiohttp_session.close())
+        except Exception:
+            pass
+atexit.register(_close_aiohttp_session)
 #         result = await serper_search(
 #             q="Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?"
 #         )

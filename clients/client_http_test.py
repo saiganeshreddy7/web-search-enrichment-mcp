@@ -40,59 +40,59 @@ async def weather(location: str):
 async def summarize(data: list[dict[str, any]]):
     async with client:
         result = await client.call_tool(
-            name="get_summarized_content", arguments={"data": data}
+            name="get_summarized_content", arguments={"input": {"data": data}}
         )
         return result
 
 
-if __name__ == "__main__":
-    print("""select which tool to run 
-        0:test_ping 
-        1:websearch 
-        2:weather 
-        3:summarize""")
+# if __name__ == "__main__":
+#     print("""select which tool to run 
+#         0:test_ping 
+#         1:websearch 
+#         2:weather 
+#         3:summarize""")
 
-    input_value = input()
-    if input_value == "0":
-        asyncio.run(test_ping())
+#     input_value = input()
+#     if input_value == "0":
+#         asyncio.run(test_ping())
 
-    elif input_value == "1":
-        query = "What's the weather like in New York?"
-        result = asyncio.run(websearch(query))
-        # Extract the exact same JSON data structure
-        final_data = []
-        for content in result.content:
-            if hasattr(content, "text"):
-                final_data.append(json.loads(content.text))
-        print(json.dumps(final_data, indent=2))
+#     elif input_value == "1":
+#         query = "What's the weather like in New York?"
+#         result = asyncio.run(websearch(query))
+#         # Extract the exact same JSON data structure
+#         final_data = []
+#         for content in result.content:
+#             if hasattr(content, "text"):
+#                 final_data.append(json.loads(content.text))
+#         print(json.dumps(final_data, indent=2))
 
-    elif input_value == "2":
-        location = "New York"
-        result = asyncio.run(weather(location))
-        # Extract the exact same JSON data structure
-        final_data = []
-        for content in result.content:
-            if hasattr(content, "text"):
-                final_data.append(json.loads(content.text))
-        print(json.dumps(final_data, indent=2))
-    elif input_value == "3":
-        sample_data = [
-            {
-                "websearch": {
-                    "headline": "Mumbai experiences warm temperatures",
-                    "source": "example.com",
-                },
-                "weather": {
-                    "location": "Mumbai",
-                    "temperature": "24°C",
-                    "condition": "Sunny",
-                },
-            }
-        ]
-        result = asyncio.run(summarize(sample_data))
-        # Extract the exact same JSON data structure
-        final_data = []
-        for content in result.content:
-            if hasattr(content, "text"):
-                final_data.append(json.loads(content.text))
-        print(json.dumps(final_data, indent=2))
+#     elif input_value == "2":
+#         location = "New York"
+#         result = asyncio.run(weather(location))
+#         # Extract the exact same JSON data structure
+#         final_data = []
+#         for content in result.content:
+#             if hasattr(content, "text"):
+#                 final_data.append(json.loads(content.text))
+#         print(json.dumps(final_data, indent=2))
+#     elif input_value == "3":
+#         sample_data = [
+#             {
+#                 "websearch": {
+#                     "headline": "Mumbai experiences warm temperatures",
+#                     "source": "example.com",
+#                 },
+#                 "weather": {
+#                     "location": "Mumbai",
+#                     "temperature": "24°C",
+#                     "condition": "Sunny",
+#                 },
+#             }
+#         ]
+#         result = asyncio.run(summarize(sample_data))
+#         # Extract the exact same JSON data structure
+#         final_data = []
+#         for content in result.content:
+#             if hasattr(content, "text"):
+#                 final_data.append(json.loads(content.text))
+#         print(json.dumps(final_data, indent=2))

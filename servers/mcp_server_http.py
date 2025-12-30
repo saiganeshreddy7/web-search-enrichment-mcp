@@ -34,7 +34,7 @@ async def get_summarized_content(input: Dict[str, Any]) -> Dict[str, Any]:
     """
     input: { "data": str }
     """
-    print("[DEBUG] get_summarized_content called with input:", input)
+    # print("[DEBUG] get_summarized_content called with input:", input)
     data = input["data"]
     result = await summarize_content(data)
     # print("[DEBUG] get_summarized_content result:", result)

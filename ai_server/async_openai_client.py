@@ -354,17 +354,18 @@ class AsyncOpenAIClient:
 
 
 # Convenience functions for backward compatibility and ease of use
+
 async def get_async_gpt_response(
+    system_message: str,
     prompt_text: str,
-    system_message: str = "You are a helpful assistant.",
     config: Optional[OpenAIConfig] = None,
 ) -> Optional[str]:
     """
     Convenience function for getting a single completion.
 
     Args:
-        prompt_text: User prompt
         system_message: System message
+        prompt_text: User prompt
         config: OpenAI configuration
 
     Returns:
@@ -374,17 +375,18 @@ async def get_async_gpt_response(
         return await client.get_completion(prompt_text, system_message)
 
 
+
 async def get_async_gpt_json_response(
+    system_message: str,
     prompt_text: str,
-    system_message: str = "You are a helpful assistant. Respond with valid JSON.",
     config: Optional[OpenAIConfig] = None,
 ) -> Optional[str]:
     """
     Convenience function for getting a JSON completion.
 
     Args:
-        prompt_text: User prompt
         system_message: System message
+        prompt_text: User prompt
         config: OpenAI configuration
 
     Returns:
@@ -406,7 +408,9 @@ async def main():
         # Test basic completion
         print("Testing basic completion...")
         response = await get_async_gpt_response(
-            "Explain async programming in Python in 2 sentences.", config=config
+            "You are a helpful assistant.",
+            "Explain async programming in Python in 2 sentences.",
+            config=config
         )
         print(f"Response: {response}")
 
@@ -415,8 +419,8 @@ async def main():
         # Test JSON completion
         print("Testing JSON completion...")
         json_response = await get_async_gpt_json_response(
-            "List the top 3 programming languages with their key features.",
             "You are a programming expert. Respond with valid JSON that includes the name of each language and at least 2 key features.",
+            "List the top 3 programming languages with their key features.",
             config=config,
         )
         print(f"JSON Response: {json_response}")
